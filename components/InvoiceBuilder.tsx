@@ -1,7 +1,7 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { InvoiceDetails } from '../types';
-import { User, MapPin, Hash, Calendar, Save, ImagePlus, X, PieChart } from 'lucide-react';
+import { User, MapPin, Hash, Calendar, Save, ImagePlus, X, PieChart, Check } from 'lucide-react';
 
 interface Props {
   details: InvoiceDetails;
@@ -26,6 +26,18 @@ const CURRENCIES = [
 
 const InvoiceBuilder: React.FC<Props> = ({ details, onChange, onApplyGlobalRate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [hasUnappliedRate, setHasUnappliedRate] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const initialRateRef = useRef(details.hourlyRate);
+
+  // Detect when the hourly rate in the input differs from the "applied" state
+  useEffect(() => {
+    if (details.hourlyRate !== initialRateRef.current) {
+      setHasUnappliedRate(true);
+    } else {
+      setHasUnappliedRate(false);
+    }
+  }, [details.hourlyRate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as any;
@@ -35,6 +47,14 @@ const InvoiceBuilder: React.FC<Props> = ({ details, onChange, onApplyGlobalRate 
       ...details, 
       [name]: (name === 'taxRate' || name === 'hourlyRate') ? parseFloat(val) || 0 : val 
     });
+  };
+
+  const handleApply = () => {
+    onApplyGlobalRate();
+    initialRateRef.current = details.hourlyRate;
+    setHasUnappliedRate(false);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 2000);
   };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,8 +75,11 @@ const InvoiceBuilder: React.FC<Props> = ({ details, onChange, onApplyGlobalRate 
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="bg-slate-50 border-b border-slate-100 px-8 py-4 flex flex-wrap items-center justify-between gap-4">
-        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest">Document Header</h3>
+      <div className="bg-slate-50 border-b border-slate-100 px-8 py-4 flex flex-wrap items-center justify-between gap-6">
+        <div className="flex items-center gap-6">
+          <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest">Pricing & Currency</h3>
+        </div>
+        
         <div className="flex items-center gap-8">
            <div className="flex items-center gap-3">
              <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Currency</span>
@@ -73,7 +96,7 @@ const InvoiceBuilder: React.FC<Props> = ({ details, onChange, onApplyGlobalRate 
            </div>
            <div className="flex items-center gap-3">
              <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Hourly Rate</span>
-             <div className="flex items-center gap-2">
+             <div className="flex items-center gap-3">
                 <div className="relative">
                   <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] font-bold">{details.currency}</span>
                   <input
@@ -81,15 +104,29 @@ const InvoiceBuilder: React.FC<Props> = ({ details, onChange, onApplyGlobalRate 
                     name="hourlyRate"
                     value={details.hourlyRate}
                     onChange={handleChange}
-                    className="bg-white border border-slate-200 rounded-lg pl-6 pr-2 py-1.5 text-xs font-bold w-24 focus:ring-1 focus:ring-indigo-500 outline-none shadow-sm"
+                    className={`bg-white border rounded-lg pl-6 pr-2 py-2 text-xs font-bold w-24 focus:ring-2 outline-none shadow-sm transition-all ${
+                        hasUnappliedRate ? 'border-indigo-300 ring-2 ring-indigo-50' : 'border-slate-200 focus:ring-indigo-500'
+                    }`}
                   />
                 </div>
                 <button
-                  onClick={onApplyGlobalRate}
-                  className="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-indigo-700 active:bg-indigo-800 transition-all flex items-center gap-2 uppercase tracking-wider shadow-sm"
+                  onClick={handleApply}
+                  className={`relative px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg transition-all duration-300 flex items-center gap-2 overflow-hidden ${
+                    showSuccess 
+                      ? 'bg-green-500 text-white translate-y-0 opacity-100' 
+                      : hasUnappliedRate 
+                        ? 'bg-indigo-600 text-white animate-in fade-in slide-in-from-right-2 scale-105 hover:bg-indigo-700 hover:scale-110 active:scale-95 opacity-100' 
+                        : 'opacity-0 pointer-events-none translate-x-4'
+                  }`}
                 >
-                  <Save className="w-3 h-3" />
-                  Apply Changes
+                  <div className={`transition-all duration-300 flex items-center gap-2 ${showSuccess ? '-translate-y-10 opacity-0' : 'translate-y-0 opacity-100'}`}>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Apply Changes</span>
+                  </div>
+                  <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${showSuccess ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                    <Check className="w-4 h-4" />
+                    <span className="ml-1">Success</span>
+                  </div>
                 </button>
              </div>
            </div>

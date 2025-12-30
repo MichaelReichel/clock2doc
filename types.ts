@@ -19,6 +19,8 @@ export interface TimeEntry {
   currency: string;
 }
 
+export type InvoiceTemplate = 'modern' | 'classic' | 'bold';
+
 export interface InvoiceDetails {
   invoiceNumber: string;
   date: string;
@@ -33,6 +35,7 @@ export interface InvoiceDetails {
   hourlyRate: number;
   logoUrl?: string;
   showProjectSummary: boolean;
+  template: InvoiceTemplate;
 }
 
 export interface AggregatedItem {

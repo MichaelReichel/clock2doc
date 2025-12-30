@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
-import { TimeEntry, InvoiceDetails, AggregatedItem } from './types';
+import { TimeEntry, InvoiceDetails, AggregatedItem, InvoiceTemplate } from './types';
 import { parseClockifyCSV, aggregateEntries } from './utils/csvParser';
 import { generateInvoiceSummary } from './services/geminiService';
 import InvoiceBuilder from './components/InvoiceBuilder';
 import InvoicePreview from './components/InvoicePreview';
-import { FileUp, FileText, Clock, Printer, RefreshCcw, ArrowRight, MessageSquareText, Download, MousePointer2, Settings } from 'lucide-react';
+import { FileUp, FileText, Clock, Printer, RefreshCcw, ArrowRight, MessageSquareText, Download, MousePointer2, Settings, Layout, Type } from 'lucide-react';
 
 const Logo: React.FC<{ className?: string }> = ({ className = "w-8 h-8" }) => (
   <div className={`relative flex items-center justify-center ${className}`}>
@@ -20,6 +20,12 @@ const Logo: React.FC<{ className?: string }> = ({ className = "w-8 h-8" }) => (
   </div>
 );
 
+const TEMPLATES: { id: InvoiceTemplate; label: string; icon: React.ReactNode }[] = [
+  { id: 'modern', label: 'Modern', icon: <Layout className="w-4 h-4" /> },
+  { id: 'classic', label: 'Classic', icon: <Type className="w-4 h-4" /> },
+  { id: 'bold', label: 'Bold', icon: <FileText className="w-4 h-4" /> },
+];
+
 const App: React.FC = () => {
   const [entries, setEntries] = useState<TimeEntry[]>([]);
   const [aggregatedData, setAggregatedData] = useState<AggregatedItem[]>([]);
@@ -31,16 +37,17 @@ const App: React.FC = () => {
     invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`,
     date: new Date().toISOString().split('T')[0],
     dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    senderName: 'Your Name/Business',
-    senderAddress: '123 Business Way\nCity, State 12345',
-    clientName: 'Client Name',
-    clientAddress: '456 Client St\nClient City, 54321',
+    senderName: '',
+    senderAddress: '',
+    clientName: '',
+    clientAddress: '',
     notes: 'Thank you for your business!',
     taxRate: 0,
     currency: '$',
     hourlyRate: 50,
     logoUrl: undefined,
-    showProjectSummary: false
+    showProjectSummary: false,
+    template: 'modern'
   });
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +100,10 @@ const App: React.FC = () => {
   const calculateSubtotal = () => aggregatedData.reduce((sum, item) => sum + item.total, 0);
   const calculateTax = () => calculateSubtotal() * (invoiceDetails.taxRate / 100);
   const calculateTotal = () => calculateSubtotal() + calculateTax();
+
+  const handleTemplateChange = (template: InvoiceTemplate) => {
+    setInvoiceDetails(prev => ({ ...prev, template }));
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -325,6 +336,29 @@ const App: React.FC = () => {
 
         {activeTab === 'preview' && (
           <div className="max-w-4xl mx-auto mb-12 animate-in zoom-in duration-300">
+            {/* Theme Selector inside Preview Tab */}
+            <div className="mb-8 no-print flex justify-center">
+              <div className="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm inline-flex items-center gap-2">
+                <span className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-r border-slate-100 mr-2">Theme</span>
+                <div className="flex items-center gap-1.5">
+                  {TEMPLATES.map((tmpl) => (
+                    <button
+                      key={tmpl.id}
+                      onClick={() => handleTemplateChange(tmpl.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter transition-all ${
+                        invoiceDetails.template === tmpl.id 
+                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-100 scale-105' 
+                          : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      {tmpl.icon}
+                      {tmpl.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 md:p-16 print-shadow-none overflow-hidden relative">
               <InvoicePreview 
                 details={invoiceDetails} 

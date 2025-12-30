@@ -33,80 +33,114 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
     return acc;
   }, {} as Record<string, number>);
 
-  return (
-    <div className="text-slate-900">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between gap-8 mb-12">
-        <div className="flex-1">
-          <div className="flex flex-col gap-6 mb-8">
-            {details.logoUrl ? (
-              <div className="max-w-[200px] max-h-[80px] mb-4">
-                <img src={details.logoUrl} alt="Business Logo" className="max-w-full max-h-full object-contain object-left" />
-              </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <Clock2DocLogo className="w-12 h-12" />
-                <div>
-                  <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">Invoice</h1>
-                  <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">Generated via Clock2Doc</p>
-                </div>
-              </div>
-            )}
-            
-            <div className="text-sm">
-              <p className="font-bold text-slate-900 text-lg mb-1">{details.senderName}</p>
-              <p className="text-slate-600 whitespace-pre-line leading-relaxed">{details.senderAddress}</p>
-            </div>
-          </div>
-        </div>
-        <div className="text-right">
-          {details.logoUrl && (
-             <div className="mb-8">
-              <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">Invoice</h1>
-              <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">Invoice ID: {details.invoiceNumber}</p>
-            </div>
-          )}
-          {!details.logoUrl && (
-            <div className="mb-8">
-              <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Invoice Number</p>
-              <p className="text-2xl font-black tracking-tight">{details.invoiceNumber}</p>
-            </div>
-          )}
-          <div className="grid grid-cols-2 gap-6 text-left md:text-right">
-            <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Date Issued</p>
-              <p className="text-sm font-bold">{details.date}</p>
-            </div>
-            <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Due Date</p>
-              <p className="text-sm font-bold">{details.dueDate}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+  const isModern = details.template === 'modern';
+  const isClassic = details.template === 'classic';
+  const isBold = details.template === 'bold';
 
-      <div className="h-0.5 bg-slate-900 w-full mb-12"></div>
+  const containerClasses = `
+    ${isClassic ? 'font-serif' : 'font-sans'}
+    text-slate-900
+  `;
+
+  return (
+    <div className={containerClasses}>
+      {/* Header Section */}
+      {isBold && (
+        <div className="bg-slate-900 text-white -mx-8 -mt-8 md:-mx-16 md:-mt-16 p-8 md:p-16 mb-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600 opacity-20 -mr-32 -mt-32 rounded-full"></div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative z-10">
+            <div>
+              <h1 className="text-5xl font-black uppercase tracking-tighter mb-2">Invoice</h1>
+              <p className="text-indigo-400 font-bold uppercase tracking-widest text-sm">Ref: {details.invoiceNumber}</p>
+            </div>
+            <div className="text-left md:text-right">
+               {details.logoUrl ? (
+                <img src={details.logoUrl} alt="Logo" className="max-h-16 brightness-0 invert" />
+              ) : (
+                <div className="flex items-center gap-3 justify-end">
+                   <Clock2DocLogo className="w-10 h-10 ring-2 ring-white/20" />
+                   <span className="text-2xl font-black uppercase tracking-tighter">Clock2Doc</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!isBold && (
+        <div className="flex flex-col md:flex-row justify-between gap-8 mb-12">
+          <div className="flex-1">
+            <div className="flex flex-col gap-6 mb-8">
+              {details.logoUrl ? (
+                <div className="max-w-[200px] max-h-[80px] mb-4">
+                  <img src={details.logoUrl} alt="Business Logo" className="max-w-full max-h-full object-contain object-left" />
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Clock2DocLogo className="w-12 h-12" />
+                  <div>
+                    <h1 className={`${isClassic ? 'text-5xl font-normal' : 'text-4xl font-black'} text-slate-900 uppercase tracking-tighter leading-none`}>Invoice</h1>
+                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">Professional Billing</p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="text-sm">
+                <p className={`${isClassic ? 'font-serif italic text-xl' : 'font-bold text-lg'} text-slate-900 mb-1`}>{details.senderName}</p>
+                <p className="text-slate-600 whitespace-pre-line leading-relaxed">{details.senderAddress}</p>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="mb-8">
+              {!isBold && !details.logoUrl && (
+                <>
+                   <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Invoice Number</p>
+                   <p className={`${isClassic ? 'text-3xl font-serif' : 'text-2xl font-black'} tracking-tight`}>{details.invoiceNumber}</p>
+                </>
+              )}
+              {details.logoUrl && (
+                 <div className="mb-2">
+                    <h1 className={`${isClassic ? 'text-5xl font-normal' : 'text-4xl font-black'} text-slate-900 uppercase tracking-tighter leading-none`}>Invoice</h1>
+                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">ID: {details.invoiceNumber}</p>
+                 </div>
+              )}
+            </div>
+            <div className={`grid grid-cols-2 gap-6 text-left md:text-right ${isClassic ? 'font-serif italic' : ''}`}>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Issued</p>
+                <p className="text-sm font-bold">{details.date}</p>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Due</p>
+                <p className="text-sm font-bold">{details.dueDate}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={`w-full mb-12 ${isBold ? 'h-0' : isClassic ? 'h-px bg-slate-200' : 'h-0.5 bg-slate-900'}`}></div>
 
       {/* Bill To & Project Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div>
+        <div className={isBold ? 'bg-slate-50 p-8 rounded-2xl border-l-8 border-indigo-600' : ''}>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Bill To</p>
-          <p className="text-2xl font-black text-slate-900">{details.clientName}</p>
+          <p className={`${isClassic ? 'text-3xl font-serif italic mb-1' : isBold ? 'text-3xl font-black mb-2' : 'text-2xl font-black'} text-slate-900`}>{details.clientName}</p>
           <p className="text-slate-600 whitespace-pre-line text-sm leading-relaxed max-w-sm">{details.clientAddress}</p>
         </div>
         
         {details.showProjectSummary && (
-          <div className="bg-slate-50 border border-slate-100 p-6 rounded-2xl">
-             <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+          <div className={`${isBold ? 'bg-indigo-50 border-indigo-100' : 'bg-slate-50 border-slate-100'} border p-6 rounded-2xl`}>
+             <p className={`text-xs font-bold ${isBold ? 'text-indigo-900' : 'text-indigo-600'} uppercase tracking-widest mb-4 flex items-center gap-2`}>
                <PieChart className="w-3.5 h-3.5" /> 
-               Time Breakdown by Project
+               Time Breakdown
              </p>
              <div className="space-y-3">
                {Object.entries(projectSummary).map(([proj, hours]) => (
                  <div key={proj} className="flex justify-between items-center text-sm">
-                   <span className="font-bold text-slate-700 truncate mr-4">{proj}</span>
-                   {/* Fix: cast hours to number as Object.entries might return unknown values in strict environments */}
-                   <span className="font-black text-slate-900 whitespace-nowrap bg-white px-2 py-0.5 rounded-lg border border-slate-100">{(hours as number).toFixed(2)}h</span>
+                   <span className={`${isClassic ? 'font-serif italic' : 'font-bold'} text-slate-700 truncate mr-4`}>{proj}</span>
+                   <span className={`font-black whitespace-nowrap bg-white px-2 py-0.5 rounded-lg border ${isBold ? 'border-indigo-200 text-indigo-900' : 'border-slate-100 text-slate-900'}`}>{(hours as number).toFixed(2)}h</span>
                  </div>
                ))}
              </div>
@@ -116,28 +150,28 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
 
       {/* Items Table */}
       <div className="mb-12">
-        <table className="w-full text-left">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-50 border-y border-slate-200">
-              <th className="py-4 px-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Description</th>
-              <th className="py-4 px-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right w-24">Hours</th>
-              <th className="py-4 px-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right w-32">Rate</th>
-              <th className="py-4 px-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right w-32">Amount</th>
+            <tr className={`${isBold ? 'bg-slate-900 text-white' : 'bg-slate-50 border-y border-slate-200'} rounded-lg overflow-hidden`}>
+              <th className={`py-4 px-4 text-xs font-bold uppercase tracking-widest ${isBold ? 'text-indigo-400' : 'text-slate-500'}`}>Work Item</th>
+              <th className={`py-4 px-4 text-xs font-bold uppercase tracking-widest text-right w-24 ${isBold ? 'text-indigo-400' : 'text-slate-500'}`}>Hours</th>
+              <th className={`py-4 px-4 text-xs font-bold uppercase tracking-widest text-right w-32 ${isBold ? 'text-indigo-400' : 'text-slate-500'}`}>Rate</th>
+              <th className={`py-4 px-4 text-xs font-bold uppercase tracking-widest text-right w-32 ${isBold ? 'text-indigo-400' : 'text-slate-500'}`}>Total</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className={`divide-y ${isClassic ? 'divide-slate-200' : 'divide-slate-100'}`}>
             {items.map((item) => (
               <tr key={item.id} className="group">
                 <td className="py-6 px-4">
-                  <p className="font-bold text-slate-900 text-base">{item.description}</p>
-                  <p className="text-xs text-indigo-600 font-bold uppercase mt-1 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                  <p className={`${isClassic ? 'font-serif text-xl italic' : isBold ? 'font-black text-lg' : 'font-bold text-base'} text-slate-900`}>{item.description}</p>
+                  <p className={`text-xs font-bold uppercase mt-1 flex items-center gap-2 ${isBold ? 'text-indigo-900 opacity-60' : 'text-indigo-600'}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${isBold ? 'bg-indigo-900' : 'bg-indigo-500'}`}></span>
                     {item.project}
                   </p>
                 </td>
-                <td className="py-6 px-4 text-right text-slate-600 font-medium">{item.quantity.toFixed(2)}h</td>
-                <td className="py-6 px-4 text-right text-slate-600 font-medium">{details.currency}{item.rate.toFixed(2)}</td>
-                <td className="py-6 px-4 text-right font-black text-slate-900">{details.currency}{item.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                <td className={`py-6 px-4 text-right font-medium ${isClassic ? 'font-serif italic' : 'text-slate-600'}`}>{item.quantity.toFixed(2)}h</td>
+                <td className={`py-6 px-4 text-right font-medium ${isClassic ? 'font-serif italic' : 'text-slate-600'}`}>{details.currency}{item.rate.toFixed(2)}</td>
+                <td className={`py-6 px-4 text-right ${isBold ? 'font-black text-lg' : 'font-black text-slate-900'}`}>{details.currency}{item.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
               </tr>
             ))}
           </tbody>
@@ -145,10 +179,10 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
       </div>
 
       {/* Totals & Notes */}
-      <div className="flex flex-col md:flex-row justify-between gap-16 pt-8 border-t border-slate-100">
+      <div className={`flex flex-col md:flex-row justify-between gap-16 pt-8 ${isBold ? 'bg-slate-50 -mx-8 -mb-8 md:-mx-16 md:-mb-16 p-8 md:p-16 border-t-4 border-slate-900' : 'border-t border-slate-100'}`}>
         <div className="flex-1">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Project Summary & Notes</p>
-          <div className="text-sm text-slate-600 leading-relaxed italic bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Service Summary & Notes</p>
+          <div className={`${isBold ? 'bg-white' : 'bg-slate-50'} text-sm text-slate-600 leading-relaxed italic p-4 rounded-xl border border-slate-100`}>
             {details.notes || "Professional services rendered for the specified period."}
           </div>
         </div>
@@ -161,22 +195,24 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
             <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px]">Tax ({details.taxRate}%)</span>
             <span className="font-bold text-slate-900">{details.currency}{tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
           </div>
-          <div className="pt-6 border-t-2 border-slate-900">
+          <div className={`pt-6 ${isClassic ? 'border-t border-slate-900' : isBold ? 'border-t-2 border-indigo-600' : 'border-t-2 border-slate-900'}`}>
             <div className="flex justify-between items-baseline">
-              <span className="text-lg font-black uppercase tracking-tighter">Total Due</span>
-              <span className="text-3xl font-black text-indigo-600 tracking-tight">{details.currency}{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+              <span className={`${isBold ? 'text-2xl font-black' : isClassic ? 'text-xl font-serif italic' : 'text-lg font-black'} uppercase tracking-tighter`}>Total Due</span>
+              <span className={`${isBold ? 'text-4xl font-black' : isClassic ? 'text-3xl font-serif' : 'text-3xl font-black'} text-indigo-600 tracking-tight`}>{details.currency}{total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-32 pt-12 border-t border-slate-100 flex justify-between items-center opacity-40 grayscale no-print-grayscale">
-        <div className="flex items-center gap-2">
-          <Clock2DocLogo className="w-6 h-6" />
-          <span className="text-[10px] font-black uppercase tracking-widest">Clock2Doc</span>
+      {!isBold && (
+        <div className="mt-32 pt-12 border-t border-slate-100 flex justify-between items-center opacity-40 grayscale no-print-grayscale">
+          <div className="flex items-center gap-2">
+            <Clock2DocLogo className="w-6 h-6" />
+            <span className="text-[10px] font-black uppercase tracking-widest">Clock2Doc</span>
+          </div>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Fast & Private Invoicing</p>
         </div>
-        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Thank you for your business!</p>
-      </div>
+      )}
     </div>
   );
 };
