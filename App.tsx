@@ -88,13 +88,23 @@ const App: React.FC = () => {
     reader.readAsText(file);
   };
 
-  const handleExport = () => {
-    // Track PDF conversion event
+  const handleExport = (source: 'header' | 'preview') => {
+    if (source === 'header') {
+      // Specifically track the header export shortcut click
+      trackEvent('export_click', {
+        event_category: 'engagement',
+        location: 'header'
+      });
+    }
+
+    // Track the actual PDF conversion intent
     trackEvent('pdf_download', {
       event_category: 'conversion',
+      source: source,
       template: invoiceDetails.template,
       currency: invoiceDetails.currency
     });
+    
     window.print();
   };
 
@@ -160,7 +170,7 @@ const App: React.FC = () => {
           </nav>
           <div>
             <button 
-              onClick={handleExport} 
+              onClick={() => handleExport('header')} 
               disabled={entries.length === 0}
               className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50 text-sm font-bold"
             >
@@ -451,7 +461,7 @@ const App: React.FC = () => {
                 Back to Editor
               </button>
               <button
-                onClick={handleExport}
+                onClick={() => handleExport('preview')}
                 className="px-10 py-4 bg-indigo-600 rounded-2xl font-black text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-3"
               >
                 <Printer className="w-6 h-6" />
