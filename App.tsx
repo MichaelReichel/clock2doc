@@ -208,7 +208,7 @@ const App: React.FC = () => {
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2 font-black">Export from Clockify</h3>
                 <p className="text-slate-500 text-sm leading-relaxed">
-                  Go to <span className="font-bold text-slate-700">Detailed Reports</span> in Clockify, filter your dates, and click <span className="font-bold text-slate-700">Export > CSV</span>.
+                  Go to <span className="font-bold text-slate-700">Detailed Reports</span> in Clockify, filter your dates, and click <span className="font-bold text-slate-700">Export &gt; CSV</span>.
                 </p>
               </article>
 
