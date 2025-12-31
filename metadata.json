@@ -1,6 +1,6 @@
 
 {
-  "name": "Clock2Doc",
-  "description": "The fastest way to transform Clockify CSV exports into professional, ready-to-send PDF invoices. Effortlessly convert tracked time into revenue.",
+  "name": "Clock2Doc - Clockify to Invoice",
+  "description": "Transform your Clockify CSV time tracking exports into professional PDF invoices instantly. Secure, browser-based conversion with AI summaries and premium templates.",
   "requestFramePermissions": []
 }

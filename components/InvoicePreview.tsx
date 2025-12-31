@@ -53,9 +53,12 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
               <h1 className="text-5xl font-black uppercase tracking-tighter mb-2">Invoice</h1>
               <p className="text-indigo-400 font-bold uppercase tracking-widest text-sm">Ref: {details.invoiceNumber}</p>
             </div>
-            <div className="text-left md:text-right">
+            <div className="text-left md:text-right flex-shrink-0">
                {details.logoUrl ? (
-                <img src={details.logoUrl} alt="Logo" className="max-h-16 brightness-0 invert" />
+                <div className="max-h-24 max-w-[280px] flex items-center md:justify-end overflow-hidden">
+                  {/* Removed filters that forced monochromatic white silhouette to show actual logo colors */}
+                  <img src={details.logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                </div>
               ) : (
                 <div className="flex items-center gap-3 justify-end">
                    <Clock2DocLogo className="w-10 h-10 ring-2 ring-white/20" />
@@ -68,15 +71,15 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
       )}
 
       {!isBold && (
-        <div className="flex flex-col md:flex-row justify-between gap-8 mb-12">
-          <div className="flex-1">
-            <div className="flex flex-col gap-6 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col gap-8">
               {details.logoUrl ? (
-                <div className="max-w-[200px] max-h-[80px] mb-4">
+                <div className="max-w-[240px] max-h-[100px] flex items-center overflow-hidden flex-shrink-0">
                   <img src={details.logoUrl} alt="Business Logo" className="max-w-full max-h-full object-contain object-left" />
                 </div>
               ) : (
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-shrink-0">
                   <Clock2DocLogo className="w-12 h-12" />
                   <div>
                     <h1 className={`${isClassic ? 'text-5xl font-normal' : 'text-4xl font-black'} text-slate-900 uppercase tracking-tighter leading-none`}>Invoice</h1>
@@ -86,13 +89,13 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
               )}
               
               <div className="text-sm">
-                <p className={`${isClassic ? 'font-serif italic text-xl' : 'font-bold text-lg'} text-slate-900 mb-1`}>{details.senderName}</p>
-                <p className="text-slate-600 whitespace-pre-line leading-relaxed">{details.senderAddress}</p>
+                <p className={`${isClassic ? 'font-serif italic text-xl' : 'font-bold text-lg'} text-slate-900 mb-2`}>{details.senderName || "Your Name / Business"}</p>
+                <p className="text-slate-600 whitespace-pre-line leading-relaxed">{details.senderAddress || "Your Address\nYour Phone\nYour Email"}</p>
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="mb-8">
+          <div className="text-right flex-shrink-0">
+            <div className="mb-10">
               {!isBold && !details.logoUrl && (
                 <>
                    <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Invoice Number</p>
@@ -106,14 +109,14 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
                  </div>
               )}
             </div>
-            <div className={`grid grid-cols-2 gap-6 text-left md:text-right ${isClassic ? 'font-serif italic' : ''}`}>
+            <div className={`grid grid-cols-2 gap-8 text-left md:text-right ${isClassic ? 'font-serif italic' : ''}`}>
               <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Issued</p>
-                <p className="text-sm font-bold">{details.date}</p>
+                <p className="text-sm font-bold whitespace-nowrap">{details.date}</p>
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Due</p>
-                <p className="text-sm font-bold">{details.dueDate}</p>
+                <p className="text-sm font-bold whitespace-nowrap">{details.dueDate}</p>
               </div>
             </div>
           </div>
@@ -123,11 +126,11 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
       <div className={`w-full mb-12 ${isBold ? 'h-0' : isClassic ? 'h-px bg-slate-200' : 'h-0.5 bg-slate-900'}`}></div>
 
       {/* Bill To & Project Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
         <div className={isBold ? 'bg-slate-50 p-8 rounded-2xl border-l-8 border-indigo-600' : ''}>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Bill To</p>
-          <p className={`${isClassic ? 'text-3xl font-serif italic mb-1' : isBold ? 'text-3xl font-black mb-2' : 'text-2xl font-black'} text-slate-900`}>{details.clientName}</p>
-          <p className="text-slate-600 whitespace-pre-line text-sm leading-relaxed max-w-sm">{details.clientAddress}</p>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Bill To</p>
+          <p className={`${isClassic ? 'text-3xl font-serif italic mb-2' : isBold ? 'text-3xl font-black mb-2' : 'text-2xl font-black'} text-slate-900 leading-tight`}>{details.clientName || "Client Name"}</p>
+          <p className="text-slate-600 whitespace-pre-line text-sm leading-relaxed max-w-sm">{details.clientAddress || "Client Address\nClient Contact Details"}</p>
         </div>
         
         {details.showProjectSummary && (
@@ -149,7 +152,7 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
       </div>
 
       {/* Items Table */}
-      <div className="mb-12">
+      <div className="mb-16">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className={`${isBold ? 'bg-slate-900 text-white' : 'bg-slate-50 border-y border-slate-200'} rounded-lg overflow-hidden`}>
@@ -179,10 +182,10 @@ const InvoicePreview: React.FC<Props> = ({ details, items, subtotal, tax, total 
       </div>
 
       {/* Totals & Notes */}
-      <div className={`flex flex-col md:flex-row justify-between gap-16 pt-8 ${isBold ? 'bg-slate-50 -mx-8 -mb-8 md:-mx-16 md:-mb-16 p-8 md:p-16 border-t-4 border-slate-900' : 'border-t border-slate-100'}`}>
+      <div className={`flex flex-col md:flex-row justify-between gap-16 pt-10 ${isBold ? 'bg-slate-50 -mx-8 -mb-8 md:-mx-16 md:-mb-16 p-8 md:p-16 border-t-4 border-slate-900' : 'border-t border-slate-100'}`}>
         <div className="flex-1">
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Service Summary & Notes</p>
-          <div className={`${isBold ? 'bg-white' : 'bg-slate-50'} text-sm text-slate-600 leading-relaxed italic p-4 rounded-xl border border-slate-100`}>
+          <div className={`${isBold ? 'bg-white' : 'bg-slate-50'} text-sm text-slate-600 leading-relaxed italic p-5 rounded-xl border border-slate-100`}>
             {details.notes || "Professional services rendered for the specified period."}
           </div>
         </div>

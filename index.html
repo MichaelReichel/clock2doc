@@ -1,13 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9799RDBX3Y"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9799RDBX3Y');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock2Doc - Clockify to Invoice</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>Clock2Doc – Free Online Clockify CSV to Invoice PDF Generator</title>
+    <meta name="description" content="Convert Clockify CSV time reports into professional PDF invoices instantly. No signup required. Free, browser-based, and privacy-focused tool for freelancers.">
+    <meta name="keywords" content="Clockify invoice generator, convert Clockify CSV to PDF, time tracking to invoice, free freelance billing tool, Clockify report converter, professional invoices from Clockify">
+    <meta name="author" content="Clock2Doc">
+    <link rel="canonical" href="https://clock2doc.app" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://clock2doc.app/">
+    <meta property="og:title" content="Clock2Doc – Clockify CSV to Professional Invoice Generator">
+    <meta property="og:description" content="Instantly convert your Clockify time logs into beautiful PDF invoices. 100% private, no signup, free forever.">
+    <meta property="og:image" content="https://clock2doc.app/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://clock2doc.app/">
+    <meta property="twitter:title" content="Clock2Doc – Free Clockify to Invoice PDF Tool">
+    <meta property="twitter:description" content="Turn your Clockify CSV exports into professional invoices in seconds. No data leaves your browser.">
+    <meta property="twitter:image" content="https://clock2doc.app/og-image.png">
+
+    <!-- Structured Data: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Clock2Doc",
+      "operatingSystem": "All",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "A browser-based tool that converts Clockify CSV time tracking exports into professional PDF invoices with AI-powered executive summaries.",
+      "featureList": "CSV Import, PDF Export, AI Summary, Project Breakdown, Custom Branding, Privacy Focused"
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I create an invoice directly from Clockify?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "While Clockify has basic invoicing in its paid tiers, Clock2Doc allows you to generate professional, customizable PDF invoices for free using a standard CSV export from any Clockify account."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Clock2Doc free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Clock2Doc is completely free to use. There are no hidden fees, no subscriptions, and no account registration required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does my data get uploaded to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Clock2Doc processes all your CSV data locally in your browser. Your sensitive client and billing information never leaves your device."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What file formats are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Currently, we support the standard 'Detailed Report' CSV export format from Clockify."
+          }
+        }
+      ]
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -23,6 +114,9 @@
             .print-shadow-none {
                 box-shadow: none !important;
             }
+        }
+        .text-balance {
+            text-wrap: balance;
         }
     </style>
 <script type="importmap">
