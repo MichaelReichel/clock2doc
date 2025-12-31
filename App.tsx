@@ -50,6 +50,13 @@ const App: React.FC = () => {
     template: 'modern'
   });
 
+  // Analytics Helper
+  const trackEvent = (eventName: string, params: object) => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', eventName, params);
+    }
+  };
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -71,8 +78,24 @@ const App: React.FC = () => {
       setAggregatedData(processedAggregated);
       setLoading(false);
       setActiveTab('builder');
+
+      // Track CSV upload event
+      trackEvent('csv_upload', {
+        event_category: 'engagement',
+        item_count: parsed.length
+      });
     };
     reader.readAsText(file);
+  };
+
+  const handleExport = () => {
+    // Track PDF conversion event
+    trackEvent('pdf_download', {
+      event_category: 'conversion',
+      template: invoiceDetails.template,
+      currency: invoiceDetails.currency
+    });
+    window.print();
   };
 
   const applyGlobalRate = () => {
@@ -137,7 +160,7 @@ const App: React.FC = () => {
           </nav>
           <div>
             <button 
-              onClick={() => window.print()} 
+              onClick={handleExport} 
               disabled={entries.length === 0}
               className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50 text-sm font-bold"
             >
@@ -428,7 +451,7 @@ const App: React.FC = () => {
                 Back to Editor
               </button>
               <button
-                onClick={() => window.print()}
+                onClick={handleExport}
                 className="px-10 py-4 bg-indigo-600 rounded-2xl font-black text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-3"
               >
                 <Printer className="w-6 h-6" />
