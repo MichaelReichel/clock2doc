@@ -46,3 +46,12 @@ export interface AggregatedItem {
   rate: number;
   total: number;
 }
+
+export interface ContactMessage {
+  id: string;
+  subject: string;
+  email: string;
+  description: string;
+  timestamp: string;
+  status: 'new' | 'read';
+}

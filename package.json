@@ -1,8 +1,14 @@
+
 {
   "name": "clock2doc",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "Transform Clockify CSV reports into professional PDF invoices.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michael280810/clock2doc"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
